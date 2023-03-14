@@ -1,0 +1,209 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Reserva
+    </ui:define>
+
+	<ui:define name="description">
+
+	</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Solicitação Reserva Veiculo" />
+
+		<h:form id="formTabela">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+					<!-- Inicio botão cadastrar -->
+					<p:commandButton action="cadastro-reserva?faces-redirect=true"
+						ajax="false" icon="fa fa-plus" value="Novo"
+						styleClass="btn-primary"
+						actionListener="#{reservaMB.criarNovoObjeto()}" />
+					<p:spacer width="5" />
+					<!--  fim do botão cadastrar-->
+
+
+					<!-- inicio botão ver -->
+
+
+					<p:spacer width="5" />
+			 
+					<p:separator />
+					<!--  fim botão ver-->
+
+					<!--  inicio da tabela-->
+					<p:dataTable id="defaultTable" widgetVar="defaultTable" rows="10"
+						paginator="true" value="#{reservaMB.listreservaServidorPendente}"
+						emptyMessage="Nenhum registro encontrado"
+						paginatorPosition="bottom" var="listReserv"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						currentPageReportTemplate="" rowsPerPageTemplate="5,10,15,20,30">
+
+						<p:ajax event="rowSelectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowUnselectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowSelect" update="@(.ui-button)" />
+						<p:ajax event="rowUnselect" update="@(.ui-button)" />
+
+
+
+
+						<p:column headerText="Detalhe" style="width: 80px;">
+							<p:commandButton icon="ui-icon-zoomout"
+								actionListener="#{reservaMB.carregarReserva(listReserv)}"
+								onclick="PF('dlgVerReserva').show();"
+								update="frmDetalhesReservas">
+								<f:setPropertyActionListener value="#{listReserv}"
+									target="#{reservaMB.reserva}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Imprimir">
+							<p:commandButton value="#{reservaMB.carregarReserva(listReserv)}"
+								ajax="false" update="formTabela" icon="ui-icon-print" />
+						</p:column>
+
+						<p:column headerText="Código">
+							<h:outputText value="#{listReserv.id}" />
+						</p:column>
+
+						<p:column headerText="Data">
+							<h:outputText value="#{listReserv.data}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Veiculo">
+							<h:outputText value="#{listReserv.veiculo.descricaoVeiculo}" />
+						</p:column>
+
+						<p:column headerText="Àrea">
+							<h:outputText
+								value="#{listReserv.areaServidor.areaServidor.descricao}" />
+						</p:column>
+
+						<p:column headerText="Responável Àrea">
+							<h:outputText
+								value="#{listReserv.areaServidor.areaServidor.servidorResponsavel.nome}" />
+						</p:column>
+
+
+
+
+					</p:dataTable>
+				</div>
+			</div>
+		</h:form>
+		<!--  fim da tabela-->
+
+		<!-- inicio do dialog ver  -->
+		<p:dialog header="Registros Selecionados"
+			widgetVar="defaultSelecionadas" height="250" width="400"
+			responsive="true" styleClass="box-success">
+			<p:dataList id="listaDefaultSelecionadas" type="definition"
+				emptyMessage="Nenhum registro selecionado">
+
+
+
+			</p:dataList>
+		</p:dialog>
+		<!-- fim do dialog ver -->
+
+
+
+		<!-- inicio do dialog ver  -->
+		<p:dialog header="Autorização Reserva" widgetVar="dlgVerReserva"
+			modal="true" width="400" responsive="true" styleClass="box-success">
+
+			<p:outputPanel id="detalheReservas">
+				<h:form id="frmDetalhesReservas">
+					<h:panelGrid columns="2">
+						<label>Solicitante: </label>
+						<h:outputText
+							value="#{reservaMB.reserva.areaServidor.servidor.nome}" />
+
+						<label>Data da Reserva: </label>
+						<h:outputText value="#{reservaMB.reserva.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Data Previsão Saída: </label>
+						<h:outputText value="#{reservaMB.reserva.dataSaida}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Data Previsão Chegada: </label>
+						<h:outputText value="#{reservaMB.reserva.dataChegada}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Previsão Hora Saída: </label>
+						<h:outputText value="#{reservaMB.reserva.horaSaida}"> 
+						</h:outputText>
+
+						<label>Previsão Hora Chegada: </label>
+						<h:outputText value="#{reservaMB.reserva.horaChegada}"> 
+						</h:outputText>
+
+						<label>Hora Extra: </label>
+						<h:outputText value="#{reservaMB.reserva.horasExtras}" />
+
+						<label>Ver Destino: </label>
+						<p:commandButton alt="Destino" title="Destino"
+							styleClass="btn btn-block" style="width: 80px;"
+							onclick="PF('destinosReserva').show();" icon="ui-icon-document"
+							actionListener="#{reservaMB.buscarDestinos()}"
+							update=":formDestinoListinha" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+
+		</p:dialog>
+		<!-- fim do dialog ver -->
+
+
+		<!-- inicio do dialog ver  -->
+		<p:dialog header="Destinos" modal="true" widgetVar="destinosReserva"
+			height="250" responsive="true" styleClass="box-success">
+			<h:form id="formDestinoListinha">
+				<p:dataList id="destino" type="definition"
+					value="#{reservaMB.listDestino}" var="listDestino"
+					emptyMessage="Nenhum destino encontrado para essa reserva">
+				
+				Destino: #{listDestino.nomeDestino},  ---  Cidade: #{listDestino.cidade.nome} --- Descrição: #{listDestino.descricao}
+				<p:separator />
+
+				</p:dataList>
+			</h:form>
+		</p:dialog>
+		<!-- fim do dialog ver -->
+
+
+
+	</ui:define>
+
+</ui:composition>

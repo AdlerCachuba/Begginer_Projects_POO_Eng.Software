@@ -1,0 +1,164 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Cidade
+    </ui:define>
+
+	<ui:define name="description">
+
+	</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Cadastro Cidade" />
+
+		<h:form id="formTabela">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+					<!-- Inicio botão cadastrar -->
+					<p:commandButton action="cadastro-cidade?faces-redirect=true"
+						ajax="false" icon="fa fa-plus" value="Novo"
+						styleClass="btn-primary"
+						actionListener="#{cidadeMB.limparLista()}" />
+					<p:spacer width="5" />
+					<!--  fim do botão cadastrar-->
+
+					<!--  inicio do botão excluir todos-->
+					<p:commandButton value="Excluir Selecionado(s)"
+						icon="fa fa-trash"
+						actionListener="#{cidadeMB.excluirSelecionados()}"
+						styleClass="btn-danger" process="@form" update="formTabela"> 
+
+						<p:confirm header="Confirmação"
+							message="Desejá excluir a(s) cidade(s) selecionada(s) ?"
+							icon="ui-icon-alert" />
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							styleClass="box-warning">
+							<p:commandButton value="Sim" type="button"
+								styleClass="btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="btn-danger ui-confirmdialog-no" icon="fa fa-close" />
+						</p:confirmDialog>
+
+					</p:commandButton>
+					<!--  inicio dialog confirmação-->
+
+
+
+					<!-- fim dialog confirmação -->
+
+					<!-- fim botão excluir todos -->
+
+					<!-- inicio botão ver -->
+
+
+					<p:spacer width="5" />
+					<p:commandButton value="Olhar Selecionado(s)"
+						oncomplete="PF('defaultSelecionadas').show()"
+						update="@(.ui-dialog)" styleClass="btn-info" icon="fa fa-search" />
+					<p:separator />
+					<!--  fim botão ver-->
+
+					<!--  inicio da tabela-->
+					<p:dataTable id="defaultTable" widgetVar="defaultTable" rows="10"
+						paginator="true" value="#{cidadeMB.listCidade}"
+						selection="#{cidadeMB.listCidadeSelecionado}"
+						emptyMessage="Nenhum registro encontrado"
+						paginatorPosition="bottom" var="cidade" rowKey="#{cidade.id}"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						currentPageReportTemplate="" rowsPerPageTemplate="5,10,15,20,30">
+
+						<p:ajax event="rowSelectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowUnselectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowSelect" update="@(.ui-button)" />
+						<p:ajax event="rowUnselect" update="@(.ui-button)" />
+
+
+						<p:column selectionMode="multiple" width="5%"
+							styleClass="align-center" />
+
+						<p:column headerText="Id"> 
+							<p:link value="#{cidade.id}" outcome="cadastro-cidade.xhtml">
+								<f:param name="id" value="#{cidade.id}" />
+							</p:link>
+						</p:column>
+
+						<p:column headerText="Nome">
+							<p:outputLabel value="#{cidade.nome}" />
+						</p:column>
+					
+
+					</p:dataTable>
+				</div>
+			</div>
+		</h:form>
+		<!--  fim da tabela-->
+
+		<!-- inicio do dialog ver  -->
+		<p:dialog header="Registros Selecionados"
+			widgetVar="defaultSelecionadas" height="250" width="400"
+			responsive="true" styleClass="box-success">
+			<p:dataList id="listaDefaultSelecionadas"
+				value="#{cidadeMB.listCidadeSelecionado}" var="cidade"
+				type="definition" emptyMessage="Nenhum registro selecionado">
+				
+	               ID: #{cidade.id},  ---  Nome: #{cidade.nome} 
+
+	            </p:dataList>
+		</p:dialog>
+		<!-- fim do dialog ver -->
+
+
+		<!-- DIALOG editar senha -->
+		<p:dialog header="Senha Servidor" responsive="true"
+			widgetVar="dglServidor" modal="true" appendTo="@(body)"
+			id="dlgServidor" closable="true" resizable="false" draggable="false"
+			styleClass="box-success">
+
+
+			<h:form id="frmModalSalvarSenha">
+
+				<label>Nome :</label>
+				<p:outputLabel value="#cidadeMB.cidade.nome}" />
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+
+					<p:commandButton value="Salvar"
+						actionListener="#{cidadeMB.inserir()}" update="formTabela"
+						styleClass="btn-success btn-block" />
+					<p:commandButton value="Sair" onclick="PF('dglCidade').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<!-- FIM DO DIALOG SALVAR -->
+
+	</ui:define>
+
+</ui:composition>

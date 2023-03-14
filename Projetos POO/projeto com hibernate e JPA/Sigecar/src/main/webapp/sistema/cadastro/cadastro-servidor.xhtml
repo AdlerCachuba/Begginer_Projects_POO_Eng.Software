@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">
+        Cadastro de Servidor
+    </ui:define>
+
+	<ui:define name="body">
+		<f:metadata>
+			<!-- carrega os dados quando for alterar -->
+
+			<f:viewParam name="id" value="#{servidorMB.idServidor}"
+				converter="javax.faces.Long" />
+			<f:event listener="#{servidorMB.inicializar()}" type="preRenderView"></f:event>
+		</f:metadata>
+
+		<!-- nome que vai aparecer na navegação -->
+		<adm:breadcrumb title="Cadastro de Servidor #{servidorMB.servidor.id}"
+			link="cadastro-servidor.xhtml?id=#{servidorMB.servidor.id}" />
+		<h:form id="form" prependId="false">
+			<p:focus />
+
+
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<div id="main-buttons" class="hidden-sm hidden-xs">
+						<!-- inicio botão salvar -->
+
+						<p:commandButton value="Salvar" update="@form :permissao :formTabelaPermissao"
+							actionListener="#{servidorMB.inserir()}" icon="fa fa-check"
+							styleClass="btn-primary" />
+						<p:spacer width="5" />
+						<!-- fim botão salvar -->
+
+
+						<!-- inicio botão excluir -->
+						<p:commandButton value="Excluir" process="@this"
+							icon="fa fa-trash" styleClass="btn-danger"
+							action="#{servidorMB.excluir()}">
+
+							<p:confirm header="Confirmação"
+								message="Desejá excluir o Servidor ?" icon="ui-icon-alert" />
+
+						</p:commandButton>
+						<!-- fim botão excluir -->
+
+
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							styleClass="box-warning">
+							<p:commandButton value="Sim" type="button"
+								styleClass="btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="btn-danger ui-confirmdialog-no" icon="fa fa-close" />
+						</p:confirmDialog>
+
+						<!-- inicio botão voltar -->
+						<p:spacer width="5" />
+						<p:commandButton value="Voltar" immediate="true"
+							action="servidor-lista?faces-redirect=true" process="@this"
+							icon="fa fa-close" />
+						<!-- fim botão voltar -->
+					</div>
+
+					<p:separator />
+					<!-- inicio campos para cadastro e edição  -->
+
+					<div class="ui-fluid">
+
+						<div class="col-md-12">
+							<label>Nome *</label>
+							<p:inputText value="#{servidorMB.servidor.nome}" required="true"
+								requiredMessage="O nome não pode ser nulo" />
+
+						</div>
+
+						<div class="col-md-4">
+
+							<label>CPF *</label>
+							<p:inputMask mask="999.999.999-99"
+								value="#{servidorMB.servidor.cpf}" required="true"
+								requiredMessage="O CPF não pode ser nulo" />
+						</div>
+						<div class="col-md-4">
+
+							<label>RG *</label>
+							<p:inputText
+								value="#{servidorMB.servidor.rg}" required="true"
+								requiredMessage="O RG não pode ser nulo" />
+						</div>
+						<div class="col-md-4">
+
+							<label>Siape *</label>
+							<p:inputText value="#{servidorMB.servidor.siape}"
+								required="true" requiredMessage="SIAPE não pode ser nulo" />
+						</div>
+						<div class="col-md-12">
+							<label>E-mail *</label>
+							<p:inputText value="#{servidorMB.servidor.email}" required="true"
+								requiredMessage="O e-mail não pode ser nulo" />
+						</div>
+
+						<div class="col-md-4">
+							<label>Telefone *</label>
+							<p:inputMask mask="(99)9999-9999"
+								value="#{servidorMB.servidor.telefone}"   />
+						</div>
+						<div class="col-md-4">
+							<label>Celular *</label>
+							<p:inputMask mask="(99)99999-9999"
+								value="#{servidorMB.servidor.celular}"  />
+						</div>
+						<div class="col-md-4">
+							<label>Cidade *</label>
+							<p:selectOneMenu id="cidade"
+								value="#{servidorMB.servidor.cidade}"
+								converter="converterCidade" required="true"
+								requiredMessage="Selecione uma cidade">
+								<f:selectItems var="c" itemValue="#{c}" itemLabel="#{c.nome}"
+									value="#{servidorMB.listCidade}" />
+							</p:selectOneMenu>
+
+						</div>
+
+						<div class="col-md-12">
+							<p:outputLabel for="console" value="Administrador:" />
+							<p:selectOneRadio id="console" required="true" requiredMessage="Informe o nível de acesso do servidor"
+								value="#{servidorMB.servidor.perfil}">
+								<f:selectItem itemLabel="Sim" itemValue="administrador" />
+								<f:selectItem itemLabel="Não" itemValue="comum" />
+							</p:selectOneRadio>
+
+						</div>
+
+						<div class="col-md-6">
+							<p:outputLabel rendered="#{servidorMB.botaoSenha}"
+								value="Senha *" />
+
+							<p:password value="#{servidorMB.servidor.senha}"
+								match="confirmesenha" id="senha"
+								validatorMessage="senhas não conferem" feedback="true"
+								weakLabel="Fraca" goodLabel="Media" strongLabel="Forte"
+								promptLabel="Digite sua senha"
+								rendered="#{servidorMB.botaoSenha}" required="true" requiredMessage="Informe a Senha"/>
+						</div>
+						<div class="col-md-6">
+							<p:outputLabel rendered="#{servidorMB.botaoSenha}"
+								value="Confirma Senha *" />
+							<p:password value="#{servidorMB.servidor.senha}"
+								id="confirmesenha" feedback="true" weakLabel="Fraca"
+								goodLabel="Media" strongLabel="Forte"
+								promptLabel="Confirme sua senha"
+								rendered="#{servidorMB.botaoSenha}" />
+
+						</div>
+
+					</div>
+					<!-- fim dos campos -->
+				</div>
+			</div>
+		</h:form>
+
+		<div class="box box-primary">
+			<div class="box-header with-border">
+
+				<div id="main-buttons" class="hidden-sm hidden-xs">
+
+					<h:form id="permissao">
+					
+						<div class="col-md-6"> 
+							<p:selectOneMenu id="cidade"
+								value="#{servidorMB.areaServidor}"
+								converter="converteAreaServidor" required="true"
+								requiredMessage="Selecione uma área">
+								<f:selectItems var="c" itemValue="#{c}" itemLabel="#{c.descricao}"
+									value="#{servidorMB.listArea}" />
+							</p:selectOneMenu>
+
+						</div>
+					
+						<div class="col-md-6">  
+							<p:commandButton value="Adicionar na Área do Servidor"
+								actionListener="#{servidorMB.adicionar()}"
+								styleClass="btn-primary" 
+								update=":formTabelaPermissao "/>
+
+						</div>
+					</h:form>
+
+					<h:form id="formTabelaPermissao">
+
+						<div class="col-md-12">
+
+							<label></label>
+
+
+
+							<!--  inicio da tabela-->
+							<p:dataTable id="defaultTable" widgetVar="defaultTable"
+								emptyMessage="Nenhum destino cadastrado"
+								value="#{servidorMB.listAreaAdicionada}" var="area"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+								currentPageReportTemplate="">
+
+								<p:ajax event="rowSelectCheckbox" update="@(.ui-button)" />
+								<p:ajax event="rowUnselectCheckbox" update="@(.ui-button)" />
+								<p:ajax event="rowSelect" update="@(.ui-button)" />
+								<p:ajax event="rowUnselect" update="@(.ui-button)" />
+
+
+
+
+								<p:column headerText="Nome da área">
+									<h:outputText value="#{area.descricao}" />
+
+								</p:column>
+
+								<p:column headerText="Servidor Responsável">
+									<h:outputText value="#{area.servidorResponsavel.nome}" />
+								</p:column>
+								
+								<p:column headerText="Excluir" style="width: 70px;">
+									<p:commandButton icon="ui-icon-trash" actionListener="#{servidorMB.removeArea(area)}" 
+									update=":formTabelaPermissao :permissao"/>
+								</p:column>
+ 
+							</p:dataTable>
+
+							<label></label>
+						</div>
+					</h:form>
+
+				</div>
+			</div>
+		</div>
+
+
+
+	</ui:define>
+
+</ui:composition>

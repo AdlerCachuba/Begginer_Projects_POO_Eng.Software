@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Área
+    </ui:define>
+
+	<ui:define name="description">
+
+	</ui:define>
+
+	<ui:define name="body">
+		<adm:breadcrumb title="Pesquisa Default" />
+
+		<h:form id="formTabela">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<p:commandButton action="cadastro-area?faces-redirect=true"
+						ajax="false" icon="fa fa-plus" value="Novo"
+						styleClass="btn-primary" />
+					<p:spacer width="5" />
+	
+			 
+				
+					<p:commandButton value="Excluir Selecionado(s)" icon="fa fa-trash"
+						styleClass="btn-danger" process="@form" update="formTabela"
+						actionListener="#{areaMB.excluirSelecionados()}">
+						<p:confirm header="Confirmação"
+							message="Deseja excluir todas as áreas selecionadas?"
+							icon="ui-icon-alert" />
+
+					</p:commandButton>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+						styleClass="box-warning">
+						<p:commandButton value="Sim" type="button"
+							styleClass="btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+						<p:commandButton value="Não" type="button"
+							styleClass="btn-danger ui-confirmdialog-no" icon="fa fa-close" />
+					</p:confirmDialog>
+
+					<p:spacer width="5" />
+					<p:commandButton value="Visualizar selecionado(s)"
+						oncomplete="PF('defaultSelecionadas').show()"
+						update="@(.ui-dialog)" styleClass="btn-info" icon="fa fa-search" />
+					<p:separator />
+
+
+					<p:dataTable id="defaultTable" widgetVar="defaultTable" rows="10"
+ 
+						paginator="true" value="#{areaMB.listArea}"
+						selection="#{areaMB.listSelecionados}" paginatorPosition="bottom"
+						var="list" rowKey="#{list.id}"
+
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						currentPageReportTemplate="" rowsPerPageTemplate="5,10,15,20,30">
+
+						<p:ajax event="rowSelectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowUnselectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowSelect" update="@(.ui-button)" />
+						<p:ajax event="rowUnselect" update="@(.ui-button)" />
+
+
+						<p:column selectionMode="multiple" width="5%"
+							styleClass="align-center" />
+
+ 
+						<p:column headerText="Área">
+							<p:link value="#{list.descricao}" outcome="cadastro-area.xhtml">
+								<f:param name="id" value="#{list.id}" />
+							</p:link>
+
+
+
+						</p:column>
+
+						<p:column headerText="Servidor Responsável">
+							<p:outputLabel value="#{list.servidorResponsavel.nome}" />
+
+						</p:column>
+
+					</p:dataTable>
+				</div>
+			</div>
+		</h:form>
+
+		<p:dialog header="Registros Selecionados"
+			widgetVar="defaultSelecionadas" height="250" width="400"
+			responsive="true" styleClass="box-success">
+			<p:dataList id="listaDefaultSelecionadas" 
+				value="#{areaMB.listSelecionados}" var="area" type="definition"
+				emptyMessage="Nenhum registro selecionado">
+	              
+      			Área: #{area.descricao} ,  ---  Responsável: #{area.servidorResponsavel.nome}
+      			
+      			
+<!-- 				value="#{areaMB.listSelecionados}" var="selecionad" -->
+<!-- 				type="definition" emptyMessage="Nenhum registro selecionado"> -->
+<!-- 	               ID: #{selecionad.id},<br /> -->
+<!-- 	               área: #{selecionad.descricao},<br /> -->
+<!-- 	               Responsável: #{selecionad.servidorResponsavel.nome}<br /> -->
+
+			</p:dataList>
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>

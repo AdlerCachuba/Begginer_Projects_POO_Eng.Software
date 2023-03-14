@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">
+        Nova Reserva
+    </ui:define>
+
+	<ui:define name="body">
+		<f:metadata>
+			<!-- carrega os dados quando for alterar -->
+
+			<f:viewParam name="id" value="#{servidorMB.idServidor}"
+				converter="javax.faces.Long" />
+			<f:event listener="#{servidorMB.inicializar()}" type="preRenderView"></f:event>
+		</f:metadata>
+
+		<!-- nome que vai aparecer na navegação -->
+		<adm:breadcrumb title="Cadastro Servidor #{servidorMB.servidor.id}"
+			link="cadastro-servidor.xhtml?id=#{servidorMB.servidor.id}" />
+
+		<p:focus />
+
+
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<div id="main-buttons" class="hidden-sm hidden-xs">
+					<!-- inicio botão salvar -->
+
+					<h:form id="form" prependId="false">
+
+						<!-- inicio botão excluir -->
+						<p:commandButton value="Excluir" process="@this"
+							icon="fa fa-trash" styleClass="btn-danger"
+							action="#{servidorMB.excluir()}">
+
+							<p:confirm header="Confirmação"
+								message="Desejá excluir o Servidor ?" icon="ui-icon-alert" />
+
+						</p:commandButton>
+						<!-- fim botão excluir -->
+
+
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							styleClass="box-warning">
+							<p:commandButton value="Sim" type="button"
+								styleClass="btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="btn-danger ui-confirmdialog-no" icon="fa fa-close" />
+						</p:confirmDialog>
+
+						<!-- inicio botão voltar -->
+						<p:spacer width="5" />
+						<p:commandButton value="Voltar" immediate="true"
+							action="reserva-lista?faces-redirect=true" process="@this"
+							icon="fa fa-close" />
+						<!-- fim botão voltar -->
+
+					</h:form>
+				</div>
+
+
+				<p:separator />
+
+
+
+
+				<!-- inicio campos para cadastro e edição  -->
+
+
+				<div class="ui-fluid">
+					<h:form id="dadosSolicitacao">
+						<div class="col-md-4">
+							<label>Servidor *</label>
+							<p:inputText value="#{reservaMB.servidor.nome}" readonly="true" />
+
+						</div>
+
+						<div class="col-md-4">
+							<label>CPF *</label>
+							<p:inputText value="#{reservaMB.servidor.cpf}" readonly="true" />
+
+						</div>
+
+						<div class="col-md-4">
+							<label>Siape *</label>
+							<p:inputText value="#{reservaMB.servidor.siape}" readonly="true" />
+
+						</div>
+
+						<div class="col-md-12">
+							<label>Área Servidor *</label>
+							<p:selectOneMenu id="area"
+								value="#{reservaMB.reserva.areaServidor}"
+								converter="converteAreaServidorReserva" required="true"
+								requiredMessage="Selecione uma Àrea">
+								<f:selectItems var="c" itemValue="#{c}"
+									itemLabel="#{c.areaServidor.descricao} - #{c.areaServidor.servidorResponsavel.nome}"
+									value="#{reservaMB.listAreaServidor}" />
+							</p:selectOneMenu>
+						</div>
+
+						<div class="col-md-12">
+							<label></label>
+						</div>
+
+
+
+
+						<p:separator />
+
+						<div class="col-md-6">
+							<label>Nome Destino *</label>
+							<p:inputText value="#{reservaMB.destino.nomeDestino}"
+								required="true"
+								requiredMessage="O nome do destino é obrigatório" />
+
+						</div>
+
+						<div class="col-md-6">
+							<label>Rua Destino </label>
+							<p:inputText value="#{reservaMB.destino.ruaDestino}" />
+
+						</div>
+
+						<div class="col-md-6">
+							<label>Número Destino </label>
+							<p:inputText value="#{reservaMB.destino.numeroDestino}" />
+
+						</div>
+
+						<div class="col-md-6">
+							<label>Cidade *</label>
+							<p:selectOneMenu id="cidade" value="#{reservaMB.destino.cidade}"
+								converter="converterCidade" required="true"
+								requiredMessage="Selecione uma cidade">
+								<f:selectItems var="c" itemValue="#{c}" itemLabel="#{c.nome}"
+									value="#{reservaMB.listCidade}" />
+							</p:selectOneMenu>
+						</div>
+
+						<div class="col-md-12">
+							<label>Descrição *</label>
+							<p:inputText value="#{reservaMB.destino.descricao}"
+								required="true" requiredMessage="A descrição é obrigatória" />
+
+						</div>
+
+						<div class="col-md-12">
+							<label>Adicionar Destino *</label>
+							<p:commandButton value="Adicionar Destino"
+								actionListener="#{reservaMB.adiciona()}"
+								update=":formTabela:defaultTable :dadosSolicitacao :formultimosDados"
+								styleClass="btn-primary" />
+
+						</div>
+					</h:form>
+
+					<h:form id="formTabela">
+
+						<div class="col-md-12">
+
+							<label></label>
+
+
+
+							<!--  inicio da tabela-->
+							<p:dataTable id="defaultTable" widgetVar="defaultTable"
+								emptyMessage="Nenhum destino cadastrado"
+								value="#{reservaMB.listDestino}" var="destinos"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+								currentPageReportTemplate="">
+
+								<p:ajax event="rowSelectCheckbox" update="@(.ui-button)" />
+								<p:ajax event="rowUnselectCheckbox" update="@(.ui-button)" />
+								<p:ajax event="rowSelect" update="@(.ui-button)" />
+								<p:ajax event="rowUnselect" update="@(.ui-button)" />
+
+
+
+
+								<p:column headerText="Nome Destino">
+									<h:outputText value="#{destinos.nomeDestino}" />
+
+								</p:column>
+
+								<p:column headerText="Rua Destino">
+									<h:outputText value="#{destinos.ruaDestino}" />
+								</p:column>
+
+								<p:column headerText="Número Destino">
+									<h:outputText value="#{destinos.numeroDestino}" />
+								</p:column>
+
+								<p:column headerText="Descricao">
+									<h:outputText value="#{destinos.descricao}" />
+								</p:column>
+
+								<p:column headerText="Cidade">
+									<h:outputText value="#{destinos.cidade.nome}" />
+								</p:column>
+
+
+
+
+
+
+
+							</p:dataTable>
+
+							<label></label>
+						</div>
+					</h:form>
+
+
+
+
+					<h:form id="formultimosDados">
+
+
+
+						<div class="col-md-6">
+
+							<label>Previsão Data Saída *</label>
+							<p:calendar value="#{reservaMB.reserva.dataSaida}"
+								required="true" requiredMessage="Informe a Previsão data Saída" />
+						</div>
+
+						<div class="col-md-6">
+
+							<label>Previsão Data Chegada *</label>
+							<p:calendar value="#{reservaMB.reserva.dataChegada}"
+								required="true"
+								requiredMessage="Informe a Previsão data Chegada" />
+						</div>
+
+						<div class="col-md-6">
+
+							<label>Previsão Hora Saída *</label>
+							<p:calendar id="inicio" value="#{reservaMB.reserva.horaSaida}"
+								pattern="HH:mm" timeOnly="true" required="true"  
+								requiredMessage="Informe a Previsão Hora Saída" />
+						</div>
+
+						<div class="col-md-6">
+
+							<label>Previsão Chegada Chegada *</label>
+							<p:calendar id="chegada" value="#{reservaMB.reserva.horaChegada}"
+								pattern="HH:mm" timeOnly="true" required="true" 
+								requiredMessage="Informe a Previsão Chegada Chegada" />
+						</div>
+
+						<div class="col-md-12">
+							<label>Horas Extra </label>
+							<p:selectOneRadio id="console"
+								value="#{reservaMB.reserva.horasExtras}">
+								<f:selectItem itemLabel="Sim" itemValue="#{true}" />
+								<f:selectItem itemLabel="Não" itemValue="#{false}" />
+							</p:selectOneRadio>
+						</div>
+
+						<div class="col-md-12">
+							<samp>campos obrigatórios *</samp>
+						</div>
+
+						<p:commandButton value="Salvar" update="@form"
+							actionListener="#{reservaMB.inserir()}" icon="fa fa-check"
+							styleClass="btn-primary" />
+						<p:spacer width="5" />
+						<!-- fim botão salvar -->
+
+					</h:form>
+
+					<!-- fim dos campos -->
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

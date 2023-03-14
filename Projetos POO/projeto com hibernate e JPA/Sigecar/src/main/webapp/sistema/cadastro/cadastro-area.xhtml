@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="title">
+        Cadastro de Área
+    </ui:define>
+
+	<ui:define name="body">
+		<f:metadata>
+			<f:viewParam name="id" value="#{areaMB.idArea}"
+				converter="javax.faces.Long" />
+			<f:event listener="#{areaMB.inicializar()}" type="preRenderView"></f:event>
+		</f:metadata>
+
+		<adm:breadcrumb title="Cadastro de Área #{areaMB.area.id}"
+			link="cadastro-area.xhtml?id=#{areaMB.area.id}" />
+	<h:form id="form" prependId="false">
+		<p:focus />
+
+
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<div id="main-buttons" class="hidden-sm hidden-xs">
+					
+						<p:commandButton value="Salvar" update="@form"
+							actionListener="#{areaMB.inserir()}" icon="fa fa-check"
+							styleClass="btn-primary" />
+						<p:spacer width="5" />
+
+						<p:commandButton value="Excluir" process="@this"
+							icon="fa fa-trash" action="#{areaMB.excluir()}"
+							styleClass="btn-danger">
+
+
+
+							<p:confirm header="Confirmação" message="Desejas excluir a área?"
+								icon="ui-icon-alert" />
+
+						</p:commandButton>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+							styleClass="box-warning">
+							<p:commandButton value="Sim" type="button"
+								styleClass="btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="btn-danger ui-confirmdialog-no" icon="fa fa-close" />
+						</p:confirmDialog>
+
+
+						<p:spacer width="5" />
+						<p:commandButton value="Voltar" immediate="true"
+							action="area-lista?faces-redirect=true" process="@this"
+							icon="fa fa-close" />
+					</div>
+
+					<p:separator />
+
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" layout="grid">
+							
+							<p:outputLabel value="Área" />
+							
+							<p:outputLabel value="Responsável" />
+						
+							<p:inputText value="#{areaMB.area.descricao}"  
+								required="true"
+								requiredMessage="Área não pode ser nulo" />							
+						
+	                     <p:selectOneMenu id="servidor"
+								value="#{areaMB.area.servidorResponsavel}"   
+								converter="converterServidor" >
+								<f:selectItems var="c" itemValue="#{c}" itemLabel="#{c.nome}"
+									value="#{areaMB.listServidor}" />
+							</p:selectOneMenu>
+
+
+
+						</p:panelGrid>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

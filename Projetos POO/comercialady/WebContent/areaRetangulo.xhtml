@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head></h:head> 
+<body> 
+   <h:panelGroup>
+                        
+                            <h:outputText
+                                value="Diga sim pra continuar Nao para parar"
+                                style="font-weight: bold;" />
+                            <h:outputText value="* " style="color: red;" />
+
+
+                            <p:selectOneRadio value="#{testeNovo.pergunta2}"
+                                required="true" requiredMessage="Pergunta 2 obrigatório">
+                                <f:selectItem itemLabel="Sim" itemValue="true" />
+                                <f:selectItem itemLabel="Não" itemValue="false" />
+                                <f:ajax event="click" render="pergunta2Item1" /> 
+
+                            </p:selectOneRadio>
+                     </h:panelGroup>   
+
+                        <h:panelGroup id="pergunta2Item1">
+                            <h:panelGrid columns="2" style="width:100% "
+                                rendered="#{testeNovo.pergunta2}">
+                                
+                                <p:spacer width="25" height="5" />
+                                <h:panelGroup>
+                                    <h:outputText
+                                        value="2.1) Se estiver qual a condição está sendo tratada"
+                                        style="font-weight: bold;" />
+                                </h:panelGroup>
+                                <p:spacer width="25" height="5" />
+                                <h:panelGroup>
+                                    <br />
+                                    <p:inputText value="#{testeNovo.pergunta2teste1}"
+                                        size="100" id="teste"
+                                        validatorMessage="A pergunta 2 devera conter apenas letras!">
+                                        <f:validateRegex pattern="^[a-z A-Z â ê ô á é í ó ú ã õ ç]+$" />
+                                    </p:inputText>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </h:panelGroup>
+
+
+
+
+
+</body> 
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:adm="http://github.com/adminfaces"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:define name="title">
+        Cadastro Veiculo
+    </ui:define>
+
+    <ui:define name="body">
+        <f:metadata>
+           <f:viewParam name="id" value="#{veiculoMB.idVeiculo}" converter="javax.faces.Long"/> 
+           <f:event listener="#{veiculoMB.inicializar()}" type="preRenderView"></f:event> 
+        </f:metadata>
+
+        <adm:breadcrumb title="Cadastro Veiculo #{veiculoMB.veiculo.id}" link="cadastro-veiculo.xhtml?id=#{veiculoMB.veiculo.id}"/>
+        <h:form id="form" prependId="false">
+            <p:focus/>
+
+			
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Salvar" update="@form" actionListener="#{veiculoMB.inserir()}"
+                                         icon="fa fa-check" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+
+                        <p:commandButton value="Excluir" process="@this"
+                                         icon="fa fa-trash" action="#{veiculoMB.excluir()}"
+                                         styleClass="btn-danger">
+                         
+                        
+                        
+						<p:confirm header="Confirmação"
+							message="Desejá excluir o veiculo ?" icon="ui-icon-alert" />
+
+					</p:commandButton>
+					
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+						styleClass="box-warning">
+						<p:commandButton value="Sim" type="button"
+							styleClass="btn-primary ui-confirmdialog-yes" icon="fa fa-check" />
+						<p:commandButton value="Não" type="button"
+							styleClass="btn-danger ui-confirmdialog-no" icon="fa fa-close" />
+					</p:confirmDialog>
+                        
+                        
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Voltar" immediate="true"
+                                         action="veiculo-lista?faces-redirect=true"
+                                         process="@this"
+                                         icon="fa fa-close"/>
+                                         
+                    </div>
+                    
+                    <p:separator/>
+
+                    <div class="ui-fluid">
+                        <p:panelGrid columns="2" layout="grid"> 
+                            <p:outputLabel value="Placa"/>
+                        
+                            <p:outputLabel  value="Descrição"/>
+                       
+                            <p:inputMask mask="aaa-9999" 
+                            style="text-transform:uppercase"
+                            size="10" value="#{veiculoMB.veiculo.placa}"
+                            required="true"
+                            requiredMessage="Placa não pode ser nulo"
+                            styleClass="form-control"/>
+                        
+                            <p:inputText  value="#{veiculoMB.veiculo.descricaoVeiculo}"  
+                            required="true"
+                            requiredMessage="Descrição não pode ser nulo"
+                            styleClass="form-control"/>
+                         
+                         </p:panelGrid>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,1 @@
+0:0:0:0:0:0:0:1 - - [26/Feb/2019:20:57:52 -0300] "GET /HelloRESTful/rest/weather/chicago/2016-08-27 HTTP/1.1" 200 98 http-bio-8080-exec-1 413

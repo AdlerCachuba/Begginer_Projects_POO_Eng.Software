@@ -1,0 +1,214 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	template="/WEB-INF/templates/template.xhtml">
+
+
+	<f:metadata>
+		<f:event listener="#{fluxoReservaMB.buscarReservaFinalizada()}"
+			type="preRenderView"></f:event>
+	</f:metadata>
+
+	<ui:define name="head-end">
+		<style type="text/css">
+.ui-grid-row .ui-grid-col-2, .ui-grid-row .ui-grid-col-10 {
+	padding: 0.5em 0;
+	margin-left: 10px;
+}
+
+.ui-orderlist .ui-orderlist-list {
+	height: auto;
+}
+
+.ui-orderlist .ui-grid-row .ui-grid-col-2, .ui-orderlist .ui-grid-row .ui-grid-col-10
+	{
+	padding: 0;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="title">
+        Reservas Finalizadas
+    </ui:define>
+
+	<ui:define name="description">
+
+	</ui:define>
+
+	<ui:define name="body">
+
+
+
+
+		<adm:breadcrumb title="Reservas Finalizadas" />
+
+		<h:form id="formTabela">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+
+
+					<p:spacer width="5" />
+
+
+					<!--  inicio da tabela-->
+					<p:dataTable id="defaultTable" widgetVar="defaultTable" rows="10"
+						paginator="true" value="#{fluxoReservaMB.listReservaFinalizada}"
+						emptyMessage="Nenhum registro encontrado"
+						paginatorPosition="bottom" var="listReserv"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+						currentPageReportTemplate="" rowsPerPageTemplate="5,10,15,20,30">
+
+						<p:ajax event="rowSelectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowUnselectCheckbox" update="@(.ui-button)" />
+						<p:ajax event="rowSelect" update="@(.ui-button)" />
+						<p:ajax event="rowUnselect" update="@(.ui-button)" />
+
+
+
+
+						<p:column headerText="Detalhe" style="width: 80px;">
+							<p:commandButton icon="ui-icon-zoomout"
+								actionListener="#{fluxoReservaMB.carregarReserva(listReserv)}"
+								onclick="PF('dlgVerReserva').show();"
+								update="frmDetalhesReservas">
+								<f:setPropertyActionListener value="#{listReserv}"
+									target="#{fluxoReservaMB.reserva}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="Código" style="width: 70px;">
+							<h:outputText value="#{listReserv.id}" />
+						</p:column>
+						
+						<p:column headerText="Solicitante">
+							<h:outputText value="#{listReserv.areaServidor.servidor.nome}" />
+						</p:column>
+						
+
+						<p:column headerText="Data Solicitação">
+							<h:outputText value="#{listReserv.data}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Data Prevista Saída">
+							<h:outputText value="#{listReserv.dataSaida}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Hora Prevista Saída">
+							<h:outputText value="#{listReserv.horaSaida}">
+							 
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="KM Inicial">
+							<h:outputText value="#{listReserv.quilometragemInicial}"/>
+						</p:column>
+						
+						<p:column headerText="KM Chegada">
+							<h:outputText value="#{listReserv.quilometragemChegada}"/>
+						</p:column>
+
+					 
+					</p:dataTable>
+				</div>
+			</div>
+		</h:form>
+		<!--  fim da tabela-->
+
+		<!-- inicio do dialog ver  -->
+		<p:dialog header="Autorização Reserva" widgetVar="dlgVerReserva"
+			modal="true"  width="400" responsive="true"
+			styleClass="box-success">
+
+			<p:outputPanel id="detalheReservas">
+				<h:form id="frmDetalhesReservas">
+					<h:panelGrid columns="2">
+						<label>Solicitante: </label>
+						<h:outputText
+							value="#{fluxoReservaMB.reserva.areaServidor.servidor.nome}" />
+
+						<label>Data da Reserva: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Data Previsão Saída: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.dataSaida}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Data Previsão Chegada: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.dataChegada}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Hora Previsão Saída: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.horaSaida}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+
+						<label>Hora Previsão Chegada: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.horaChegada}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+						
+						<label>KM Saída: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.quilometragemInicial}"/>
+						
+						<label>KM Chegada: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.quilometragemChegada}"/>
+						
+						<label>Observação Motorista: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.obsMotorista}"/>
+						
+						<label>Observação Administrador: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.descricaoAdm}"/>
+						
+						<label>Observação Chefe: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.descricaoAdm}"/>
+
+						<label>Hora Extra: </label>
+						<h:outputText value="#{fluxoReservaMB.reserva.horasExtras}" />
+
+						<label>Ver Destino: </label>
+						<p:commandButton alt="Destino" title="Destino"
+							styleClass="btn btn-block" style="width: 80px;"
+							onclick="PF('destinosReserva').show();" icon="ui-icon-document"
+							actionListener="#{fluxoReservaMB.buscarDestinos()}"
+							update=":formDestinoListinha" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+
+		</p:dialog>
+		<!-- fim do dialog ver -->
+
+
+		<!-- inicio do dialog ver  -->
+		<p:dialog header="Destinos" modal="true" widgetVar="destinosReserva"
+			height="250" responsive="true" styleClass="box-success">
+			<h:form id="formDestinoListinha">
+				<p:dataList id="destino" type="definition"
+					value="#{fluxoReservaMB.listDestino}" var="listDestino"
+					emptyMessage="Nenhum destino encontrado para essa reserva">
+				
+				Destino: #{listDestino.nomeDestino},  ---  Cidade: #{listDestino.cidade.nome} --- Descrição: #{listDestino.descricao}
+				<p:separator />
+
+			</p:dataList>
+			</h:form>
+		</p:dialog>
+		<!-- fim do dialog ver -->
+
+
+		 
+	</ui:define>
+
+</ui:composition>

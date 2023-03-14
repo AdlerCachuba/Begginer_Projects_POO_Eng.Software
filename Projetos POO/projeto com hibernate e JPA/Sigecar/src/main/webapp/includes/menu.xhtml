@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<f:metadata>
+		<f:event listener="#{controleAcessoMB.inicializar()}"
+			type="preRenderView"></f:event>
+	</f:metadata>
+
+
+	<ul class="sidebar-menu">
+
+		<p:growl autoUpdate="true" life="4000" id="mm" />
+
+		<li><p:link href="/index.xhtml">
+				<i class="fa fa-home"></i>
+				<span>Página Inicial</span>
+			</p:link></li>
+		<p:link rendered="#{controleAcessoMB.administrador}">
+			<li class="header">Cadastros</li>
+		</p:link>
+
+		<li><p:link rendered="#{controleAcessoMB.administrador}"
+				href="/sistema/cadastro/cidade-lista.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Cidade</span>
+			</p:link></li>
+
+
+		<li><p:link rendered="#{controleAcessoMB.administrador}"
+				href="/sistema/cadastro/servidor-lista.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Servidor</span>
+			</p:link></li>
+		<li><p:link rendered="#{controleAcessoMB.administrador}"
+				href="/sistema/cadastro/veiculo-lista.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Veiculo</span>
+			</p:link></li>
+		<li><p:link rendered="#{controleAcessoMB.administrador}"
+				href="/sistema/cadastro/motorista-lista.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Motorista</span>
+			</p:link></li>
+		<li><p:link rendered="#{controleAcessoMB.administrador}"
+				href="/sistema/cadastro/area-lista.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Área</span>
+			</p:link></li>
+
+
+
+		<li class="header">Reserva</li>
+		<li><p:link href="/sistema/reserva/reserva-lista.xhtml"
+				rendered="#{! controleAcessoMB.motorista}">
+				<i class="fa fa-edit"></i>
+				<span>Reserva</span>
+
+			</p:link></li>
+
+		<li><p:link rendered="#{controleAcessoMB.administrador}"
+				href="/sistema/reserva/autorizacao-reserva.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Reserva Pendente</span>
+
+			</p:link></li>
+
+		<li><p:link rendered="#{controleAcessoMB.controleChefe}"
+				href="/sistema/reserva/autorizacao-reserva-chefe.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Reserva Pendente Chefe</span>
+
+			</p:link></li>
+
+		<li><p:link rendered="#{controleAcessoMB.motorista}"
+				href="/sistema/reserva/autorizacao-reserva-motorista.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Reserva Pendente Motorista</span>
+
+			</p:link></li>
+
+		<li><p:link rendered="#{! controleAcessoMB.motorista}"
+				href="/sistema/reserva/confirma-reserva.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Confirma Reserva</span>
+
+			</p:link></li>
+
+		<li><p:link rendered="#{! controleAcessoMB.motorista}"
+				href="/sistema/reserva/reserva-finalizada.xhtml">
+				<i class="fa fa-edit"></i>
+				<span>Reservas Finalizadas</span>
+
+			</p:link></li>
+
+
+
+		<li><p:link href="/j_spring_security_logout">
+
+				<i class="fa fa-close"></i>
+				<span>Sair</span>
+			</p:link></li>
+
+
+
+	</ul>
+
+
+</ui:composition>
